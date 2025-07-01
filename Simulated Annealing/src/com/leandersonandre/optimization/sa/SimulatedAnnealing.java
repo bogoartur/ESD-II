@@ -71,7 +71,7 @@ public class SimulatedAnnealing {
         bestFitness = currentFitness;
     }
 
-    public void execute(String filePrefix) {
+    public void execute(String fileName) {
         builder = new StringBuilder();
         iterationsAtTemp = 0;
         double temperature = tempInitial;
@@ -130,17 +130,17 @@ public class SimulatedAnnealing {
             temperature *= alpha;
             iterationsAtTemp = 0;
         }
-        writeReport(filePrefix);
-        generateGraphsFitness(filePrefix);
-        generateGraphsTemperature(filePrefix);
+        writeReport(fileName);
+        generateGraphsFitness(fileName);
+        generateGraphsTemperature(fileName);
         System.out.println("Best Solution: " + Arrays.toString(bestSolution));
         System.out.println("Best fitness: " + bestFitness);
         System.out.println("Total of Iterations: " + countIterations);
     }
 
-    private void writeReport(String filePrefix) {
+    private void writeReport(String fileName) {
         try {
-            String fileName = "report_" + filePrefix + ".csv";
+            String fileName = "report_" + fileName + ".csv";
             Files.write(Paths.get(fileName), builder.toString().getBytes(), StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
@@ -148,30 +148,30 @@ public class SimulatedAnnealing {
         }
     }
 
-    private void generateGraphsTemperature(String filePrefix) {
-        String chartTitle = "Temperatura vs Iteração (" + filePrefix + ")";
+    private void generateGraphsTemperature(String fileName) {
+        String chartTitle = "Temperatura vs Iteração (" + fileName + ")";
         XYChart chart = new XYChartBuilder().width(1200).height(800).title(chartTitle).xAxisTitle("Iteração")
                 .yAxisTitle("Temperatura").build();
         chart.addSeries("Temperatura", xData, temperatures);
         chart.getStyler().setLegendVisible(false);
 
         try {
-            String fileName = "grafico_temperatura_" + filePrefix;
+            String fileName = "grafico_temperatura_" + fileName;
             BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void generateGraphsFitness(String filePrefix) {
-        String chartTitle = "Convergência do Fitness vs Iteração (" + filePrefix + ")";
+    private void generateGraphsFitness(String fileName) {
+        String chartTitle = "Convergência do Fitness vs Iteração (" + fileName + ")";
         XYChart chart = new XYChartBuilder().width(1200).height(800).title(chartTitle).xAxisTitle("Iteração")
                 .yAxisTitle("Fitness").build();
         chart.addSeries("Melhor Fitness", xData, bestFitnesses);
         chart.addSeries("Fitness Atual", xData, currentFitnesses);
 
         try {
-            String fileName = "grafico_convergencia_" + filePrefix;
+            String fileName = "grafico_convergencia_" + fileName;
             BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
         } catch (IOException e) {
             throw new RuntimeException(e);
